@@ -1,0 +1,6 @@
+{
+    "name": "Research Agent",
+    "description": "Handles research tasks",
+    "model": "gpt-4",
+    "temperature": 0.7
+}
