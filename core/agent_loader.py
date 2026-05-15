@@ -25,10 +25,17 @@ def get_agents():
         )
 
         if os.path.isdir(agent_path) and os.path.exists(config_path):
-            agents.append(item)
+
+            with open(config_path, "r") as file:
+                config = json.load(file)
+
+            agents.append({
+                "folder_name": item,
+                "name": config.get("name"),
+                "description": config.get("description")
+            })
 
     return agents
-
 
 def load_config(agent_name):
 
@@ -43,7 +50,15 @@ def load_config(agent_name):
             f"No config found for {agent_name}"
         )
 
-    with open(config_path, "r") as file:
-        config = json.load(file)
+    try:
 
-    return config
+        with open(config_path, "r") as file:
+            config = json.load(file)
+
+        return config
+
+    except json.JSONDecodeError:
+
+        raise ValueError(
+            f"Invalid JSON in {agent_name}"
+        )

@@ -2,5 +2,9 @@
     "name": "Research Agent",
     "description": "Handles research tasks",
     "model": "gpt-4",
-    "temperature": 0.7
+    "temperature": 0.7,
+    "tools": [
+        "search_tool",
+        "summarize_tool"
+    ]
 }

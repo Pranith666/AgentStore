@@ -1,17 +1,23 @@
-from core.agent_loader import get_agents, load_config
+from core.agent_loader import (
+    get_agents,
+    load_config
+)
 
+
+print("\n=== AVAILABLE AGENTS ===\n")
 
 agents = get_agents()
 
-print("Available Agents:")
-print(agents)
-
-print("\nAgent Configs:\n")
-
 for agent in agents:
 
-    config = load_config(agent)
+    print(agent)
 
-    print(f"{agent}:")
+print("\n=== LOADED CONFIG ===\n")
+
+if agents:
+
+    first_agent = agents[0]["folder_name"]
+
+    config = load_config(first_agent)
+
     print(config)
-    print()
