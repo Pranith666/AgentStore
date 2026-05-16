@@ -1,4 +1,14 @@
+from pathlib import Path
+import sys
+
 import streamlit as st
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from core.agent_loader import get_agents, load_config
 
 
 st.set_page_config(
@@ -8,19 +18,56 @@ st.set_page_config(
 )
 
 
-def render_sidebar() -> None:
+def render_sidebar() -> tuple[dict | None, dict | None]:
     st.sidebar.title("Agent Builder")
-    st.sidebar.caption("Phase 1 placeholder")
+    st.sidebar.caption("Select an agent workspace")
 
     st.sidebar.divider()
     st.sidebar.subheader("Agents")
-    st.sidebar.info("Agent list will appear here.")
+
+    if st.sidebar.button("Refresh Agents", use_container_width=True):
+        st.rerun()
+
+    agents = get_agents()
+
+    if not agents:
+        st.sidebar.info("No agents found.")
+        return None, None
+
+    selected_folder = st.sidebar.selectbox(
+        "Select agent",
+        options=[agent["folder_name"] for agent in agents],
+        format_func=lambda folder_name: next(
+            (
+                agent.get("name") or agent["folder_name"]
+                for agent in agents
+                if agent["folder_name"] == folder_name
+            ),
+            folder_name,
+        ),
+    )
+
+    selected_agent = next(
+        agent for agent in agents if agent["folder_name"] == selected_folder
+    )
+    config = load_config(selected_agent["folder_name"])
+
+    if selected_agent.get("description"):
+        st.sidebar.caption(selected_agent["description"])
 
     st.sidebar.subheader("Tools")
-    st.sidebar.info("Tool controls will appear here.")
+    tools = config.get("tools", [])
+
+    if tools:
+        for tool_name in tools:
+            st.sidebar.write(tool_name)
+    else:
+        st.sidebar.info("No tools configured.")
+
+    return selected_agent, config
 
 
-def render_main_layout() -> None:
+def render_main_layout(selected_agent: dict | None, config: dict | None) -> None:
     st.title("Generic Agent Builder")
     st.caption("Create, edit, and run agents from one workspace.")
 
@@ -34,7 +81,12 @@ def render_main_layout() -> None:
 
     with config_column:
         st.subheader("Agent Details")
-        st.info("Selected agent configuration will appear here.")
+
+        if selected_agent and config:
+            st.write(f"Selected: {selected_agent.get('name') or selected_agent['folder_name']}")
+            st.json(config)
+        else:
+            st.info("Select an agent to view its configuration.")
 
         with st.expander("Tool Editor", expanded=True):
             st.text_area(
@@ -50,5 +102,5 @@ def render_main_layout() -> None:
             st.button("Apply Remarks", disabled=True)
 
 
-render_sidebar()
-render_main_layout()
+selected_agent, selected_config = render_sidebar()
+render_main_layout(selected_agent, selected_config)

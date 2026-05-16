@@ -1,0 +1,10 @@
+{
+    "name": "Writing Agent",
+    "description": "Helps draft and edit written content",
+    "model": "gpt-4",
+    "temperature": 0.6,
+    "tools": [
+        "draft_tool",
+        "edit_tool"
+    ]
+}
