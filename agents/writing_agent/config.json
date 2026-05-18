@@ -6,5 +6,13 @@
     "tools": [
         "draft_tool",
         "edit_tool"
-    ]
+    ],
+    "tool_configs": {
+        "draft_tool": {
+            "prompt": "Draft clear written content for this request: {input}"
+        },
+        "edit_tool": {
+            "prompt": "Improve the clarity, grammar, and structure of this text: {input}"
+        }
+    }
 }

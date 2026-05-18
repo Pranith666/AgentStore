@@ -6,5 +6,13 @@
     "tools": [
         "search_tool",
         "summarize_tool"
-    ]
+    ],
+    "tool_configs": {
+        "search_tool": {
+            "prompt": "Search for relevant information about: {input}"
+        },
+        "summarize_tool": {
+            "prompt": "Summarize this clearly: {input}"
+        }
+    }
 }

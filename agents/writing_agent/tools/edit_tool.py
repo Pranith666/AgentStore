@@ -1,3 +1,11 @@
-def edit(text):
+from core.tool_interface import run_llm_prompt
 
-    return f"Editing content: {text}"
+
+def run(input, llm, config):
+
+    result = run_llm_prompt(input, llm, config)
+
+    if llm is None:
+        return f"Edit prompt: {result}"
+
+    return result

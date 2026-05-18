@@ -1,3 +1,11 @@
-def draft(prompt):
+from core.tool_interface import run_llm_prompt
 
-    return f"Drafting content for: {prompt}"
+
+def run(input, llm, config):
+
+    result = run_llm_prompt(input, llm, config)
+
+    if llm is None:
+        return f"Draft prompt: {result}"
+
+    return result
