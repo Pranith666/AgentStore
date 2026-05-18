@@ -10,7 +10,6 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from core.agent_loader import get_agents, load_config
 
-
 st.set_page_config(
     page_title="Agent Builder",
     page_icon="🛂",
@@ -54,18 +53,49 @@ def render_sidebar() -> tuple[dict | None, dict | None]:
 
     if selected_agent.get("description"):
         st.sidebar.caption(selected_agent["description"])
+    
+    #st.sidebar.subheader("Tools")
+    #tools = config.get("tools", [])
 
-    st.sidebar.subheader("Tools")
+    #if tools:
+     #   for tool_name in tools:
+      #      st.sidebar.write(tool_name)
+    #else:
+     #   st.sidebar.info("No tools configured.")
+        st.sidebar.subheader("Tools")
+
     tools = config.get("tools", [])
+    tool_configs = config.get("tool_configs", {})
+
+    tool_icons = {
+        "search_tool": "🔍",
+        "summarize_tool": "📝",
+        "draft_tool": "✍️",
+        "edit_tool": "🛠️",
+    }
 
     if tools:
         for tool_name in tools:
-            st.sidebar.write(tool_name)
+            tool_config = tool_configs.get(tool_name, {})
+
+            icon = tool_icons.get(tool_name, "🔧")
+
+            pretty_name = (
+                f"{icon} "
+                f"{tool_name.replace('_', ' ').title()}"
+            )
+
+            with st.sidebar.expander(pretty_name):
+                st.write("Tool Interface:")
+                st.code("run(input, llm, config)")
+
+                st.write("Configuration:")
+                st.json(tool_config)
+
     else:
         st.sidebar.info("No tools configured.")
 
     return selected_agent, config
-
 
 def render_main_layout(selected_agent: dict | None, config: dict | None) -> None:
     st.title("Generic Agent Builder")
